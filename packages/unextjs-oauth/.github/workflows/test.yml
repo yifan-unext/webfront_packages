@@ -1,0 +1,16 @@
+name: Tests
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    container: node:10.16-jessie
+    steps:
+    - uses: actions/checkout@v1
+    - name: npm install, build, and test
+      run: |
+        cd app
+        npm install
+        npm run test
+        npm run build
