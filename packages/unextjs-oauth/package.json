@@ -10,7 +10,8 @@
     "minify": "jsmin -o dist/index.min.js dist/index.js",
     "compile": "tsc --build tsconfig.lib.json && yarn run minify",
     "build": "yarn run clean && yarn run compile",
-    "lint": "eslint \"./**/*.{ts,tsx}\""
+    "lint": "eslint \"./**/*.{ts,tsx}\"",
+    "test": "yarn run lint"
   },
   "dependencies": {
     "axios": "^0.19.0",
