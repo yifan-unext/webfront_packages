@@ -1,9 +1,9 @@
 {
-  "name": "unextjs-oauth",
+  "name": "@u-next/unextjs-oauth",
   "version": "0.1.0",
-  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": "git://github.com/u-next/unextjs-oauth",
   "scripts": {
     "clean": "rimraf dist",
     "dev": "next dev",
@@ -56,5 +56,8 @@
   "prettier": {
     "singleQuote": true,
     "trailingComma": "es5"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
