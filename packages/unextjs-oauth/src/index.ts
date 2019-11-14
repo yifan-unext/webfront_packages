@@ -45,10 +45,22 @@ export const migrateTokens = async (
       return;
     }
 
-    const securityToken = cookies['_st'];
+    let securityToken = cookies['_st'];
     const accessToken = cookies['_at'];
 
     if (securityToken && !accessToken) {
+      /**
+       * If the securityToken matches the below regex, it is serialized
+       * by the Yii framework and we will parse it and override the securityToken
+       * with the parsed value.
+       */
+      const parsedSt = cookies['_st'].match(
+        /([a-z0-9]+)a:2(.*)s:[0-9]{2}:"([a-z0-9-]+)";}/
+      );
+      if (parsedSt && parsedSt[3]) {
+        securityToken = parsedSt[3];
+      }
+
       const response = await axios.post('/oauth2/migration', {
         client_id: 'unextApp',
         scope: ['offline'],
