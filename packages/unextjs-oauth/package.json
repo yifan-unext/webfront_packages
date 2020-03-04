@@ -8,10 +8,10 @@
     "clean": "rimraf dist",
     "dev": "next dev",
     "minify": "jsmin -o dist/index.min.js dist/index.js",
-    "compile": "tsc --build tsconfig.lib.json && yarn run minify",
-    "build": "yarn run clean && yarn run compile",
+    "compile": "tsc --build tsconfig.lib.json && npm run minify",
+    "build": "npm run clean && npm run compile",
     "lint": "eslint \"./**/*.{ts,tsx}\"",
-    "test": "yarn run lint"
+    "test": "npm run lint"
   },
   "peerDependencies": {
     "next": "^9.2.2"

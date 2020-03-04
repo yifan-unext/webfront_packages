@@ -8,8 +8,9 @@ jobs:
     container: node:10.16-jessie
     steps:
     - uses: actions/checkout@v1
-    - name: yarn, build, and test
+    - name: npm install, build, and test
       run: |
-        yarn
-        yarn run test
-        yarn run build
+        npm i
+        npm i next
+        npm run test
+        npm run build
