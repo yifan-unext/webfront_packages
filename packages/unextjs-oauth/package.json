@@ -1,6 +1,6 @@
 {
   "name": "@u-next/unextjs-oauth",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "git://github.com/u-next/unextjs-oauth",
@@ -13,9 +13,11 @@
     "lint": "eslint \"./**/*.{ts,tsx}\"",
     "test": "yarn run lint"
   },
+  "peerDependencies": {
+    "next": "^9.2.2"
+  },
   "dependencies": {
     "axios": "^0.19.0",
-    "next": "9.0.5",
     "nookies": "^2.0.8",
     "react": "16.9.0",
     "react-dom": "16.9.0"
