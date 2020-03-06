@@ -22,7 +22,10 @@ class CoreApp extends App {
     const appProps = await App.getInitialProps(initialProps);
 
     // This will migrate the tokens
-    await migrateTokens(initialProps.ctx);
+    await migrateTokens(initialProps.ctx, {
+        clientId: 'unextApp',
+        clientSecret: 'unextApp',
+        });
 
     return appProps;
   }
@@ -41,7 +44,7 @@ The migration will only happen if the user does not already have an access token
 
 ## Migration Options
 
-`migrateTokens` second argument is for options to adjust how the migration behaves. **None of the following options are required, but cookie parameters are recommended to be set!**
+`migrateTokens` second argument is for options to adjust how the migration behaves.
 
 **🚨You must set `env` to production for actual production use or the cookies will not be secure!🚨**
 
@@ -50,3 +53,6 @@ The migration will only happen if the user does not already have an access token
 - `cookieMaxAge`: **_number_** Max age of the cookie in seconds _(Defaults to 60 minutes)_
 - `cookiePath`: **_string_** For the cookie _(Defaults to `/`)_
 - `cookieDomain`: **_string_** Domain of the cookie
+- `scopes`: **_[string]_** Array of scopes (by default only `offline` scope will be included)
+- `clientId`: **_string_** OAuth2 client ID (mandatory)
+- `clientSecret` **_string_** OAuth2 client secret (mandatory)

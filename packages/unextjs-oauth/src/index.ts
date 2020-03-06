@@ -3,7 +3,7 @@ import { parseCookies, setCookie } from 'nookies';
 import { NextPageContext } from 'next';
 
 const PRODUCTION_URL = 'https://oauth.unext.jp';
-const PRODUCTION_TEST_URL = 'https://oauth-test.unext.jp';
+const DEVELOPMENT_URL = 'https://oauth.wf.unext.dev';
 
 const transformRequest = (jsonData: Record<string, string> = {}) =>
   Object.entries(jsonData)
@@ -16,6 +16,9 @@ interface MigrateOptions {
   cookieMaxAge?: number;
   cookiePath?: string;
   cookieDomain?: string;
+  scopes?: [string];
+  clientId: string;
+  clientSecret: string;
 }
 
 const getOAuthURL = (options: MigrateOptions) => {
@@ -27,16 +30,24 @@ const getOAuthURL = (options: MigrateOptions) => {
     case 'production':
       return PRODUCTION_URL;
     default:
-      return PRODUCTION_TEST_URL;
+      return DEVELOPMENT_URL;
   }
 };
 
 export const migrateTokens = async (
   ctx: NextPageContext,
-  options: MigrateOptions = {}
+  options: MigrateOptions
 ) => {
   axios.defaults.baseURL = getOAuthURL(options);
   const isProd = options.env === 'production';
+
+  if (!options) {
+    throw new Error('migrateTokens: no options provided');
+  }
+
+  if (!options.clientId || !options.clientSecret) {
+    throw new Error('migrateTokens: no clientId/clientSecret provided');
+  }
 
   try {
     const cookies = parseCookies(ctx);
@@ -62,8 +73,8 @@ export const migrateTokens = async (
       }
 
       const response = await axios.post('/oauth2/migration', {
-        client_id: 'unextApp',
-        scope: ['offline'],
+        client_id: options.clientId,
+        scope: options.scopes ? ['offline', ...options.scopes] : ['offline'],
         portal_user_info: {
           securityToken,
         },
@@ -74,8 +85,8 @@ export const migrateTokens = async (
           grant_type: 'authorization_code',
           code: response.data.auth_code,
           redirect_uri: response.data.redirect_uri,
-          client_id: 'unextApp',
-          client_secret: 'unextApp',
+          client_id: options.clientId,
+          client_secret: options.clientSecret,
         };
 
         const headers = {
@@ -107,7 +118,7 @@ export const migrateTokens = async (
       }
     }
   } catch (e) {
-    console.log('Token exchange failed', e.message);
+    throw new Error(`migrateTokens failed: ${e.message}`);
   }
 };
 
