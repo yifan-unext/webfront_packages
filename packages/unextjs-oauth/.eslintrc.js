@@ -20,12 +20,6 @@ module.exports = {
     'arrow-parens': 'off',
     'no-console': 1,
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-object-literal-type-assertion': [
-      'error',
-      {
-        allowAsParameter: true,
-      },
-    ],
   },
   overrides: [
     {

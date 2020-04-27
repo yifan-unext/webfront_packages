@@ -1,12 +1,18 @@
 import React from 'react';
 import App, { AppContext } from 'next/app';
-import migrateTokens from '../src';
+import migrateTokens, { MigrateStatus } from '../src';
 
 class CoreApp extends App {
   public static async getInitialProps(initialProps: AppContext) {
     const appProps = await App.getInitialProps(initialProps);
 
-    await migrateTokens(initialProps.ctx);
+    const { status } = await migrateTokens(initialProps.ctx, {
+      clientId: 'unextApp',
+      clientSecret: 'unextApp',
+    });
+    if (status === MigrateStatus.FAILED) {
+      console.log('Failed to migrate');
+    }
 
     return appProps;
   }

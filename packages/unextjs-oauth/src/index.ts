@@ -7,10 +7,10 @@ const DEVELOPMENT_URL = 'https://oauth.wf.unext.dev';
 
 const transformRequest = (jsonData: Record<string, string> = {}) =>
   Object.entries(jsonData)
-    .map(x => `${encodeURIComponent(x[0])}=${encodeURIComponent(x[1])}`)
+    .map((x) => `${encodeURIComponent(x[0])}=${encodeURIComponent(x[1])}`)
     .join('&');
 
-interface MigrateOptions {
+export interface MigrateOptions {
   url?: string;
   env?: 'production';
   cookieMaxAge?: number;
@@ -21,14 +21,15 @@ interface MigrateOptions {
   clientSecret: string;
 }
 
-enum MigrateStatus {
+export enum MigrateStatus {
   NONE = 'none',
   SUCCESS = 'success',
   FAILED = 'failed',
 }
 
-interface MigrateResult {
+export interface MigrateResult {
   status: MigrateStatus;
+  accessToken?: string;
 }
 
 const getOAuthURL = (options: MigrateOptions) => {
@@ -44,7 +45,7 @@ const getOAuthURL = (options: MigrateOptions) => {
   }
 };
 
-export const migrateTokens = async (
+const migrateTokens = async (
   ctx: NextPageContext,
   options: MigrateOptions
 ): Promise<MigrateResult> => {
@@ -109,22 +110,29 @@ export const migrateTokens = async (
           { headers }
         );
 
-        if (exchange.data && exchange.data.access_token) {
-          setCookie(ctx, '_at', exchange.data.access_token, {
+        if (exchange.data?.access_token) {
+          const {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          } = exchange.data;
+          setCookie(ctx, '_at', accessToken, {
             maxAge: options.cookieMaxAge || 60 * 60,
             secure: isProd,
             httpOnly: true,
             path: options.cookiePath || '/',
             domain: options.cookieDomain,
           });
-          setCookie(ctx, '_rt', exchange.data.refresh_token, {
+          setCookie(ctx, '_rt', refreshToken, {
             maxAge: options.cookieMaxAge || 60 * 60,
             secure: isProd,
             httpOnly: true,
             path: options.cookiePath || '/',
             domain: options.cookieDomain,
           });
-          return { status: MigrateStatus.SUCCESS };
+          return {
+            status: MigrateStatus.SUCCESS,
+            accessToken,
+          };
         }
       }
       return { status: MigrateStatus.FAILED };
