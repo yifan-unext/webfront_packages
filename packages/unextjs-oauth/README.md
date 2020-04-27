@@ -22,11 +22,19 @@ class CoreApp extends App {
     const appProps = await App.getInitialProps(initialProps);
 
     // This will migrate the tokens
-    await migrateTokens(initialProps.ctx, {
+    const { status } = await migrateTokens(initialProps.ctx, {
         clientId: 'unextApp',
         clientSecret: 'unextApp',
         });
-
+    if (status === 'success') {
+      // migration succeeded
+    }
+    if (status === 'failed') {
+      // migration error
+    }
+    if (status === 'none') {
+      // nothing done (already migrated or no cookie exists)
+    }
     return appProps;
   }
 
