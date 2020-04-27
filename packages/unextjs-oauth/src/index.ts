@@ -21,6 +21,16 @@ interface MigrateOptions {
   clientSecret: string;
 }
 
+enum MigrateStatus {
+  NONE = 'none',
+  SUCCESS = 'success',
+  FAILED = 'failed',
+}
+
+interface MigrateResult {
+  status: MigrateStatus;
+}
+
 const getOAuthURL = (options: MigrateOptions) => {
   if (options.url) {
     return options.url;
@@ -37,7 +47,7 @@ const getOAuthURL = (options: MigrateOptions) => {
 export const migrateTokens = async (
   ctx: NextPageContext,
   options: MigrateOptions
-) => {
+): Promise<MigrateResult> => {
   axios.defaults.baseURL = getOAuthURL(options);
   const isProd = options.env === 'production';
 
@@ -53,7 +63,7 @@ export const migrateTokens = async (
     const cookies = parseCookies(ctx);
 
     if (!cookies) {
-      return;
+      return { status: MigrateStatus.NONE };
     }
 
     let securityToken = cookies['_st'];
@@ -114,11 +124,14 @@ export const migrateTokens = async (
             path: options.cookiePath || '/',
             domain: options.cookieDomain,
           });
+          return { status: MigrateStatus.SUCCESS };
         }
       }
+      return { status: MigrateStatus.FAILED };
     }
+    return { status: MigrateStatus.NONE };
   } catch (e) {
-    throw new Error(`migrateTokens failed: ${e.message}`);
+    return { status: MigrateStatus.FAILED };
   }
 };
 
