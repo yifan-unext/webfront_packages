@@ -37,7 +37,7 @@ jobs:
       - name: Build
         env:
           HUSKY_SKIP_INSTALL: 1
-        run: npm install && npm run build
+        run: npm i && npm i next && npm run build
       - name: Publish
         run: npx can-npm-publish && npm publish
         env:
