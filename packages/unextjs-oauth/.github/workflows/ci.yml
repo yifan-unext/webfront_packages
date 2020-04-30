@@ -1,0 +1,44 @@
+name: unext-oauth CI
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    container: node:10.16-jessie
+    steps:
+      - uses: actions/checkout@v1
+      - name: npm install, build, and test
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: |
+          npm i
+          npm i next
+          npm run test
+          npm run build
+  publish:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@u-next"
+      - name: Build
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: npm install && npm run build
+      - name: Publish
+        run: npx can-npm-publish && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

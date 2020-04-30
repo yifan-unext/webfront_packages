@@ -1,0 +1,7 @@
+.vscode
+.github
+.eslintignore
+.eslintrc.js
+.editorconfig
+static
+pages
