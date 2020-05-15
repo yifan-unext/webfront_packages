@@ -49,9 +49,6 @@ const migrateTokens = async (
   ctx: NextPageContext,
   options: MigrateOptions
 ): Promise<MigrateResult> => {
-  axios.defaults.baseURL = getOAuthURL(options);
-  const isProd = options.env === 'production';
-
   if (!options) {
     throw new Error('migrateTokens: no options provided');
   }
@@ -60,12 +57,11 @@ const migrateTokens = async (
     throw new Error('migrateTokens: no clientId/clientSecret provided');
   }
 
+  axios.defaults.baseURL = getOAuthURL(options);
+  const isProd = options.env === 'production';
+
   try {
     const cookies = parseCookies(ctx);
-
-    if (!cookies) {
-      return { status: MigrateStatus.NONE };
-    }
 
     let securityToken = cookies['_st'];
     const accessToken = cookies['_at'];
@@ -91,7 +87,7 @@ const migrateTokens = async (
         },
       });
 
-      if (response.data && response.data.auth_code) {
+      if (response.data?.auth_code) {
         const data = {
           grant_type: 'authorization_code',
           code: response.data.auth_code,

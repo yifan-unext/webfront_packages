@@ -12,5 +12,5 @@
     "skipLibCheck": true,
     "declaration": true
   },
-  "exclude": ["node_modules", "dist", "pages"]
+  "exclude": ["node_modules", "dist", "pages", "**/__tests__/**/*.ts"]
 }
