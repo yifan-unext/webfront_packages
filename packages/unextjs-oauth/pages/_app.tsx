@@ -9,6 +9,12 @@ class CoreApp extends App {
     const { status } = await migrateTokens(initialProps.ctx, {
       clientId: 'unextApp',
       clientSecret: 'unextApp',
+      scopes: ['googleHome'],
+      cookieDomain: 'unext.jp',
+      cookieTTLs: {
+        accessTokenMaxAge: 6 * 3600,
+        refreshTokenMaxAge: 365 * 24 * 3600,
+      },
     });
     if (status === MigrateStatus.FAILED) {
       console.log('Failed to migrate');

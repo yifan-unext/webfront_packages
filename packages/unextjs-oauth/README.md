@@ -4,13 +4,21 @@ This is a package to help migrate user tokens and security tokens to U-NEXT OAut
 
 # Installation
 
-Currently we don't have this published to any package manage. You will need to reference the repository directly in your package.json like so:
+You need a deploy token for downloading private NPM packages from the `u-next` Github organization and _Read_ authorization for the `u-next/unextjs-oauth` repository.
 
-```json
-"dependencies": {
-    "unextjs-oauth": "git@github.com:u-next/unextjs-oauth.git",
-}
+1. Log-in with npm to https://npm.pkg.github.com providing your ID and the deploy token as credentials
+2. NPM install the package as follows
+
 ```
+npm install @u-next/unextjs-oauth
+```
+
+# Change history
+
+- `0.4.0` introduces breaking changes in the MigrateOptions
+  - `cookieMaxAge` has been replaced by `cookieTTLs`, in order to specify separate cookie life times for OAuth2 access token and refresh token.
+  - `scope` becomes mandatory
+  - `cookieDomain` becomes mandatory
 
 # Usage
 
@@ -25,6 +33,9 @@ class CoreApp extends App {
     const { status } = await migrateTokens(initialProps.ctx, {
         clientId: 'unextApp',
         clientSecret: 'unextApp',
+        scope: ['googleHome'],
+        cookieTTLs: { accessTokenMaxAge: 6*3600, refreshTokenMaxAge: 365 * 24 * 3600 },
+        cookieDomain: 'unext.jp',
         });
     if (status === 'success') {
       // migration succeeded
@@ -52,15 +63,36 @@ The migration will only happen if the user does not already have an access token
 
 ## Migration Options
 
-`migrateTokens` second argument is for options to adjust how the migration behaves.
+`migrateTokens` second argument is for options to specify how the migration behaves.
 
-**🚨You must set `env` to production for actual production use or the cookies will not be secure!🚨**
+**🚨You must set `env` to _'production'_ for actual production use or the cookies will not be secure!🚨**
 
 - `env`: **_string_** Defaults to development. Accepts `production` as a string to switch the endpoint to the production U-NEXTJS OAuth2 endpoint
-- `url`: **_string_** Override the API endpoint of the OAuth2 server
-- `cookieMaxAge`: **_number_** Max age of the cookie in seconds _(Defaults to 60 minutes)_
-- `cookiePath`: **_string_** For the cookie _(Defaults to `/`)_
-- `cookieDomain`: **_string_** Domain of the cookie
-- `scopes`: **_[string]_** Array of scopes (by default only `offline` scope will be included)
+- `url`: **_string_** Optional OAuth2 endpoint override
 - `clientId`: **_string_** OAuth2 client ID (mandatory)
 - `clientSecret` **_string_** OAuth2 client secret (mandatory)
+- `scopes`: **_string[]_** OAuth2 scopes; _'offline'_ is included automatically
+- `cookieTTLs`: **_CookieMaxAges_** | **_CookieExpires_** Cookie TTLs
+- `cookiePath`: **_string_** Cookie Path, defaults to `/`
+- `cookieDomain`: **_string_**
+
+### _CookieMaxAges_
+
+- `accessTokenMaxAge`: **_number_** OAuth2 access token cookie MaxAge [sec]
+- `refreshTokenMaxAge`: **_number_** OAuth2 refresh token cookie MaxAge [sec])
+
+### _CookieExpires_
+
+- `accessTokenExpires`: **_Date_** OAuth2 access token cookie date of expiration
+- `refreshTokenExpires`: **_Date_** OAuth2 refresh token cookie date of expiration
+
+## Migration Result
+
+- `status`: **_MigrationStatus_** Result of migration
+- `accessToken`: **_string_** OAuth2 access token (useful for chaining with API calls like user info fetch)
+
+### _MigrationStatus_
+
+- `MigrationStatus.NONE`: no migration (already migrated or nothing to migrate)
+- `MigrationStatus.FAILED`: migration attempt failed
+- `MigrationStatus.SUCCESS`: migration successful
