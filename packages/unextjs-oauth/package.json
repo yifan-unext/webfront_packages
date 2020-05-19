@@ -1,6 +1,6 @@
 {
   "name": "@u-next/unextjs-oauth",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "git://github.com/u-next/unextjs-oauth",

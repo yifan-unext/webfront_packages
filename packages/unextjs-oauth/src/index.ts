@@ -4,21 +4,32 @@ import { NextPageContext } from 'next';
 
 const PRODUCTION_URL = 'https://oauth.unext.jp';
 const DEVELOPMENT_URL = 'https://oauth.wf.unext.dev';
+const OFFLINE_SCOPE = 'offline';
 
 const transformRequest = (jsonData: Record<string, string> = {}) =>
   Object.entries(jsonData)
     .map((x) => `${encodeURIComponent(x[0])}=${encodeURIComponent(x[1])}`)
     .join('&');
 
+export interface CookieMaxAges {
+  accessTokenMaxAge: number;
+  refreshTokenMaxAge: number;
+}
+
+export interface CookieExpires {
+  accessTokenExpires: Date;
+  refreshTokenExpires: Date;
+}
+
 export interface MigrateOptions {
   url?: string;
   env?: 'production';
-  cookieMaxAge?: number;
-  cookiePath?: string;
-  cookieDomain?: string;
-  scopes?: [string];
   clientId: string;
   clientSecret: string;
+  cookieDomain: string;
+  cookieTTLs: CookieExpires | CookieMaxAges;
+  cookiePath?: string;
+  scopes: string[];
 }
 
 export enum MigrateStatus {
@@ -44,6 +55,10 @@ const getOAuthURL = (options: MigrateOptions) => {
       return DEVELOPMENT_URL;
   }
 };
+
+const isCookieMaxAges = (
+  cookieTTLs: CookieExpires | CookieMaxAges
+): cookieTTLs is CookieMaxAges => 'accessTokenMaxAge' in cookieTTLs;
 
 const migrateTokens = async (
   ctx: NextPageContext,
@@ -79,9 +94,13 @@ const migrateTokens = async (
         securityToken = parsedSt[3];
       }
 
+      const scope = [...options.scopes];
+      if (scope.indexOf(OFFLINE_SCOPE) === -1) {
+        scope.push(OFFLINE_SCOPE);
+      }
       const response = await axios.post('/oauth2/migration', {
         client_id: options.clientId,
-        scope: options.scopes ? ['offline', ...options.scopes] : ['offline'],
+        scope,
         portal_user_info: {
           securityToken,
         },
@@ -111,20 +130,39 @@ const migrateTokens = async (
             access_token: accessToken,
             refresh_token: refreshToken,
           } = exchange.data;
-          setCookie(ctx, '_at', accessToken, {
-            maxAge: options.cookieMaxAge || 60 * 60,
+          const commonCookieOptions = {
             secure: isProd,
             httpOnly: true,
             path: options.cookiePath || '/',
             domain: options.cookieDomain,
-          });
-          setCookie(ctx, '_rt', refreshToken, {
-            maxAge: options.cookieMaxAge || 60 * 60,
-            secure: isProd,
-            httpOnly: true,
-            path: options.cookiePath || '/',
-            domain: options.cookieDomain,
-          });
+          };
+          if (isCookieMaxAges(options.cookieTTLs)) {
+            const {
+              accessTokenMaxAge,
+              refreshTokenMaxAge,
+            } = options.cookieTTLs;
+            setCookie(ctx, '_at', accessToken, {
+              ...commonCookieOptions,
+              maxAge: accessTokenMaxAge,
+            });
+            setCookie(ctx, '_rt', refreshToken, {
+              ...commonCookieOptions,
+              maxAge: refreshTokenMaxAge,
+            });
+          } else {
+            const {
+              accessTokenExpires,
+              refreshTokenExpires,
+            } = options.cookieTTLs;
+            setCookie(ctx, '_at', accessToken, {
+              ...commonCookieOptions,
+              expires: accessTokenExpires,
+            });
+            setCookie(ctx, '_rt', refreshToken, {
+              ...commonCookieOptions,
+              expires: refreshTokenExpires,
+            });
+          }
           return {
             status: MigrateStatus.SUCCESS,
             accessToken,

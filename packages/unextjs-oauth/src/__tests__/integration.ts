@@ -72,7 +72,13 @@ describe('migrateTokens', () => {
     runOnTestServer(async (ctx) => {
       let error: Error = null;
       try {
-        await migrateTokens(ctx, { clientId: 'unext', clientSecret: null });
+        await migrateTokens(ctx, {
+          clientId: null,
+          clientSecret: null,
+          scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
+        });
       } catch (e) {
         error = e;
       }
@@ -85,7 +91,13 @@ describe('migrateTokens', () => {
     runOnTestServer(async (ctx) => {
       let error: Error = null;
       try {
-        await migrateTokens(ctx, { clientId: null, clientSecret: 'unext' });
+        await migrateTokens(ctx, {
+          clientId: 'unext',
+          clientSecret: null,
+          scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
+        });
       } catch (e) {
         error = e;
       }
@@ -99,8 +111,11 @@ describe('migrateTokens', () => {
     runOnTestServer(async (ctx) => {
       await migrateTokens(ctx, {
         clientId: 'unext',
-        clientSecret: 'unext ',
+        clientSecret: 'unext',
         url: OAUTH2_TEST_URL,
+        scopes: ['testscope'],
+        cookieDomain: 'test.com',
+        cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
       });
       expect(axios.defaults.baseURL).toBe(OAUTH2_TEST_URL);
     }, done);
@@ -109,8 +124,11 @@ describe('migrateTokens', () => {
     runOnTestServer(async (ctx) => {
       await migrateTokens(ctx, {
         clientId: 'unext',
-        clientSecret: 'unext ',
+        clientSecret: 'unext',
         env: 'production',
+        scopes: ['testscope'],
+        cookieDomain: 'test.com',
+        cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
       });
       expect(axios.defaults.baseURL).toBe('https://oauth.unext.jp');
     }, done);
@@ -120,7 +138,10 @@ describe('migrateTokens', () => {
       async (ctx) => {
         const { status, accessToken } = await migrateTokens(ctx, {
           clientId: 'unext',
-          clientSecret: 'unext ',
+          clientSecret: 'unext',
+          scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
         });
         expect(status).toBe(MigrateStatus.NONE);
         expect(accessToken).toBeUndefined();
@@ -133,7 +154,10 @@ describe('migrateTokens', () => {
     runOnTestServer(async (ctx) => {
       const { status, accessToken } = await migrateTokens(ctx, {
         clientId: 'unext',
-        clientSecret: 'unext ',
+        clientSecret: 'unext',
+        scopes: ['testscope'],
+        cookieDomain: 'test.com',
+        cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
       });
       expect(status).toBe(MigrateStatus.NONE);
       expect(accessToken).toBeUndefined();
@@ -147,15 +171,17 @@ describe('migrateTokens', () => {
       async (ctx) => {
         const { status, accessToken } = await migrateTokens(ctx, {
           clientId: 'unext',
-          clientSecret: 'unext ',
+          clientSecret: 'unext',
           scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
         });
         expect(mockedPost).toBeCalledTimes(1);
         expect(mockedPost.mock.calls[0]).toEqual([
           '/oauth2/migration',
           {
             client_id: 'unext',
-            scope: ['offline', 'testscope'],
+            scope: ['testscope', 'offline'],
             portal_user_info: {
               securityToken: 'badtoken',
             },
@@ -176,13 +202,15 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext ',
           scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
         });
         expect(mockedPost).toBeCalledTimes(1);
         expect(mockedPost.mock.calls[0]).toEqual([
           '/oauth2/migration',
           {
             client_id: 'unext',
-            scope: ['offline', 'testscope'],
+            scope: ['testscope', 'offline'],
             portal_user_info: {
               securityToken: 'goodtoken',
             },
@@ -208,13 +236,15 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext',
           scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
         });
         expect(mockedPost).toBeCalledTimes(2);
         expect(mockedPost.mock.calls[0]).toEqual([
           '/oauth2/migration',
           {
             client_id: 'unext',
-            scope: ['offline', 'testscope'],
+            scope: ['testscope', 'offline'],
             portal_user_info: {
               securityToken: 'goodtoken',
             },
@@ -249,13 +279,15 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext',
           scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
         });
         expect(mockedPost).toBeCalledTimes(2);
         expect(mockedPost.mock.calls[0]).toEqual([
           '/oauth2/migration',
           {
             client_id: 'unext',
-            scope: ['offline', 'testscope'],
+            scope: ['testscope', 'offline'],
             portal_user_info: {
               securityToken: 'd17524e1-1c50-4259-a75e-5f90fc4f3835',
             },
@@ -277,7 +309,51 @@ describe('migrateTokens', () => {
       '_st=565f8bfa272d24fda6d0308a58cc990c420263e2f81ebcd55af337468cb1a4a9a%3A2%3A%7Bi%3A0%3Bs%3A3%3A%22_st%22%3Bi%3A1%3Bs%3A36%3A%22d17524e1-1c50-4259-a75e-5f90fc4f3835%22%3B%7D'
     );
   });
-  it('sets cookie according to options.cookieMaxAge', (done) => {
+  it('migrates successfully when offline scope is explicitly requested', (done) => {
+    mockedPost
+      .mockResolvedValueOnce({ data: { auth_code: 'testauthcode' } })
+      .mockResolvedValueOnce({
+        data: { access_token: 'testtoken1', refresh_token: 'testtoken2' },
+      })
+      .mockRejectedValue(new Error('Should not be called'));
+    runOnTestServer(
+      async (ctx) => {
+        const { status, accessToken } = await migrateTokens(ctx, {
+          clientId: 'unext',
+          clientSecret: 'unext',
+          scopes: ['offline'],
+          cookieDomain: 'test.com',
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
+        });
+        expect(mockedPost).toBeCalledTimes(2);
+        expect(mockedPost.mock.calls[0]).toEqual([
+          '/oauth2/migration',
+          {
+            client_id: 'unext',
+            scope: ['offline'],
+            portal_user_info: {
+              securityToken: 'goodtoken',
+            },
+          },
+        ]);
+        expect(mockedPost.mock.calls[1]).toEqual([
+          '/oauth2/token',
+          'grant_type=authorization_code&code=testauthcode&redirect_uri=undefined&client_id=unext&client_secret=unext',
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          },
+        ]);
+        expect(status).toBe(MigrateStatus.SUCCESS);
+        expect(accessToken).toBe('testtoken1');
+      },
+      done,
+      '_st=goodtoken'
+    );
+  });
+
+  it('sets cookie MaxAge according to options.cookieTTL', (done) => {
     mockedPost
       .mockResolvedValueOnce({ data: { auth_code: 'testauthcode' } })
       .mockResolvedValueOnce({
@@ -290,14 +366,52 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext',
           scopes: ['testscope'],
-          cookieMaxAge: 1000000,
+          cookieDomain: 'test.com',
+          cookieTTLs: {
+            accessTokenMaxAge: 3600,
+            refreshTokenMaxAge: 100000000,
+          },
         });
         expect(status).toBe(MigrateStatus.SUCCESS);
         expect(accessToken).toBe('testtoken1');
         const cookies: string[] = ctx.res.getHeader('Set-Cookie') as string[];
         expect(cookies.length).toBe(2);
-        expect(cookies[0]).toMatch(/_at=(.*) Max-Age=1000000/);
-        expect(cookies[1]).toMatch(/_rt=(.*) Max-Age=1000000/);
+        expect(cookies[0]).toMatch(/_at=(.*) Max-Age=3600;/);
+        expect(cookies[1]).toMatch(/_rt=(.*) Max-Age=100000000;/);
+      },
+      done,
+      '_st=goodtoken'
+    );
+  });
+  it('sets cookie Expires according to options.cookieTTL', (done) => {
+    mockedPost
+      .mockResolvedValueOnce({ data: { auth_code: 'testauthcode' } })
+      .mockResolvedValueOnce({
+        data: { access_token: 'testtoken1', refresh_token: 'testtoken2' },
+      })
+      .mockRejectedValue(new Error('Should not be called'));
+    runOnTestServer(
+      async (ctx) => {
+        const { status, accessToken } = await migrateTokens(ctx, {
+          clientId: 'unext',
+          clientSecret: 'unext',
+          scopes: ['testscope'],
+          cookieDomain: 'test.com',
+          cookieTTLs: {
+            accessTokenExpires: new Date('2020-04-01T19:32:45Z'),
+            refreshTokenExpires: new Date('2025-04-01T19:32:45Z'),
+          },
+        });
+        expect(status).toBe(MigrateStatus.SUCCESS);
+        expect(accessToken).toBe('testtoken1');
+        const cookies: string[] = ctx.res.getHeader('Set-Cookie') as string[];
+        expect(cookies.length).toBe(2);
+        expect(cookies[0]).toMatch(
+          /_at=(.*) Expires=Wed, 01 Apr 2020 19:32:45 GMT;/
+        );
+        expect(cookies[1]).toMatch(
+          /_rt=(.*) Expires=Tue, 01 Apr 2025 19:32:45 GMT;/
+        );
       },
       done,
       '_st=goodtoken'
@@ -316,15 +430,20 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext',
           scopes: ['testscope'],
-          cookieMaxAge: 1000000,
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
+          cookieDomain: 'test.com',
           cookiePath: '/home',
         });
         expect(status).toBe(MigrateStatus.SUCCESS);
         expect(accessToken).toBe('testtoken1');
         const cookies: string[] = ctx.res.getHeader('Set-Cookie') as string[];
         expect(cookies.length).toBe(2);
-        expect(cookies[0]).toMatch(/_at=(.*); Max-Age=1000000; Path=\/home/);
-        expect(cookies[1]).toMatch(/_rt=(.*); Max-Age=1000000; Path=\/home/);
+        expect(cookies[0]).toMatch(
+          /_at=(.*); Max-Age=0; Domain=test.com; Path=\/home/
+        );
+        expect(cookies[1]).toMatch(
+          /_rt=(.*); Max-Age=0; Domain=test.com; Path=\/home/
+        );
       },
       done,
       '_st=goodtoken'
@@ -343,7 +462,7 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext',
           scopes: ['testscope'],
-          cookieMaxAge: 1000000,
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
           cookieDomain: 'test.com',
         });
         expect(status).toBe(MigrateStatus.SUCCESS);
@@ -351,10 +470,10 @@ describe('migrateTokens', () => {
         const cookies: string[] = ctx.res.getHeader('Set-Cookie') as string[];
         expect(cookies.length).toBe(2);
         expect(cookies[0]).toMatch(
-          /_at=(.*); Max-Age=1000000; Domain=test.com; Path=\//
+          /_at=(.*); Max-Age=0; Domain=test.com; Path=\//
         );
         expect(cookies[1]).toMatch(
-          /_rt=(.*); Max-Age=1000000; Domain=test.com; Path=\//
+          /_rt=(.*); Max-Age=0; Domain=test.com; Path=\//
         );
       },
       done,
@@ -375,7 +494,7 @@ describe('migrateTokens', () => {
           clientId: 'unext',
           clientSecret: 'unext',
           scopes: ['testscope'],
-          cookieMaxAge: 1000000,
+          cookieTTLs: { accessTokenMaxAge: 0, refreshTokenMaxAge: 0 },
           cookieDomain: 'test.com',
         });
         expect(status).toBe(MigrateStatus.SUCCESS);
