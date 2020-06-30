@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["dom", "es2017"],
+    "skipLibCheck": true,
+    "declaration": true
+  },
+  "exclude": ["node_modules", "dist", "pages", "**/__tests__/**/*.ts"]
+}

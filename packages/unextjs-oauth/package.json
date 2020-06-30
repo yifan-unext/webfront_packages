@@ -1,0 +1,74 @@
+{
+  "name": "@u-next/unextjs-oauth",
+  "version": "0.4.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": "git://github.com/u-next/unextjs-oauth",
+  "scripts": {
+    "clean": "rimraf dist",
+    "dev": "next dev",
+    "minify": "jsmin -o dist/index.min.js dist/index.js",
+    "compile": "tsc --build tsconfig.lib.json && npm run minify",
+    "build": "npm run clean && npm run compile",
+    "lint": "eslint \"./**/*.{ts,tsx}\"",
+    "test": "npm run lint && jest --coverage"
+  },
+  "peerDependencies": {
+    "next": "^9.4.0"
+  },
+  "dependencies": {
+    "axios": "^0.19.2",
+    "nookies": "^2.2.3"
+  },
+  "devDependencies": {
+    "@types/isomorphic-fetch": "0.0.35",
+    "@types/jest": "^25.2.2",
+    "@types/react": "^16.9.34",
+    "@types/test-listen": "^1.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "babel-eslint": "^10.1.0",
+    "can-npm-publish": "^1.3.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-react": "^7.19.0",
+    "husky": "^4.2.5",
+    "isomorphic-fetch": "^2.2.1",
+    "jest": "^26.0.1",
+    "jest-cli": "^26.0.1",
+    "jsmin": "^1.0.1",
+    "lint-staged": "^10.1.7",
+    "prettier": "^2.0.5",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rimraf": "^3.0.2",
+    "test-listen": "^1.1.0",
+    "ts-jest": "^25.5.1",
+    "typescript": "^3.8.3"
+  },
+  "browserslist": "> 0.25%, not dead",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*.{ts,tsx,js}": [
+      "prettier --write",
+      "eslint",
+      "git add"
+    ],
+    "**/*.{json,md}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
+}
