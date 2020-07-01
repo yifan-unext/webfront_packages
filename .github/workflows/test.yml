@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-18.04
     container: node:10.16-jessie
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: install, build, and test
         env:
           HUSKY_SKIP_INSTALL: 1
         run: |
           yarn install
+          yarn build-changed
           yarn test-changed
 # test

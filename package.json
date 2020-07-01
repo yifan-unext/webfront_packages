@@ -5,6 +5,8 @@
     "packages/*"
   ],
   "scripts": {
+    "build": "lerna run build",
+    "build-changed": "lerna run build --since master",
     "test": "lerna run test",
     "test-changed": "lerna run test --since master"
   },
