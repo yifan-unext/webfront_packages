@@ -28,6 +28,6 @@ jobs:
           yarn install
           yarn build
       - name: Publish
-        run: npx can-npm-publish && lerna publish
+        run: lerna publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
