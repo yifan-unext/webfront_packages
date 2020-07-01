@@ -6,9 +6,9 @@
   ],
   "scripts": {
     "build": "lerna run build",
-    "build-changed": "lerna run build --since master",
+    "build-changed": "lerna run build --since refs/remotes/origin/master",
     "test": "lerna run test",
-    "test-changed": "lerna run test --since master"
+    "test-changed": "lerna run test --since refs/remotes/origin/master"
   },
   "devDependencies": {
     "lerna": "^3.22.1",
