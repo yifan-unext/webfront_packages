@@ -11,7 +11,7 @@ jobs:
     # container: node:10.16-jessie
     strategy:
       matrix:
-        node: [10.x, 12.x]
+        node-version: [10.x, 12.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
