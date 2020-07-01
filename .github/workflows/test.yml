@@ -10,9 +10,12 @@ jobs:
     runs-on: ubuntu-18.04
     container: node:10.16-jessie
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Fetch all history for all tags and branches
+          run: git fetch
       - name: install, build, and test
         env:
           HUSKY_SKIP_INSTALL: 1
