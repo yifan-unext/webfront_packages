@@ -8,11 +8,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-18.04
-    # container: node:10.16-jessie
     strategy:
       matrix:
         node-version: [10.x, 12.x]
     steps:
+      # https://github.com/actions/checkout/issues/217
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -30,4 +30,3 @@ jobs:
           yarn install
           yarn build-changed
           yarn test-changed
-# test

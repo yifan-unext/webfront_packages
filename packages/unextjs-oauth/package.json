@@ -1,5 +1,5 @@
 {
-  "name": "@u-next/unextjs-oauth",
+  "name": "@yifan-unext/unextjs-oauth",
   "version": "0.4.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

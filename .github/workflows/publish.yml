@@ -1,0 +1,33 @@
+name: publish
+
+on:
+  pull_request:
+    branches:
+      - "*"
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@yifan-unext"
+          # scope: "@u-next"
+      - name: Build
+        env:
+          HUSKY_SKIP_INSTALL: 1
+        run: |
+          yarn install
+          yarn build
+      - name: Publish
+        run: npx can-npm-publish && lerna publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
