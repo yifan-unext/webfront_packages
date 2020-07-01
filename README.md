@@ -11,7 +11,6 @@ The monorepo for managing webfront npm packages.
 ### Prerequisite
 
 * [yarn](https://yarnpkg.com/)
-* [lerna](https://lerna.js.org/)
 
 ### Setup
 
@@ -39,6 +38,16 @@ $ yarn workspace awesome-package add react --dev
 Add a common dependency to all packages:
 ```
 $ yarn add <package-name> -W
+```
+
+Run tests:
+```
+$ yarn test
+```
+
+Run tests only for changed packages:
+```
+$ yarn test-changed
 ```
 
 ### Merge a package in a standalone repository

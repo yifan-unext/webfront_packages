@@ -16,5 +16,5 @@ jobs:
           HUSKY_SKIP_INSTALL: 1
         run: |
           yarn install
-          yarn test
+          yarn test-changed
 # test
