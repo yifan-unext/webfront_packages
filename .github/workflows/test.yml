@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Fetch all history for all tags and branches
-          run: git fetch
+        run: git fetch
       - name: install, build, and test
         env:
           HUSKY_SKIP_INSTALL: 1
