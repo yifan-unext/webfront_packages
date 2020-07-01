@@ -9,6 +9,9 @@ jobs:
   test:
     runs-on: ubuntu-18.04
     # container: node:10.16-jessie
+    strategy:
+      matrix:
+        node: [10.x, 12.x]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -16,6 +19,10 @@ jobs:
           fetch-depth: 0
       - name: Pull all tags
         run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: install, build, and test
         env:
           HUSKY_SKIP_INSTALL: 1
