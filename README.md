@@ -6,19 +6,21 @@ The monorepo for managing webfront npm packages.
 
 [https://github.com/orgs/u-next/packages](https://github.com/orgs/u-next/packages)
 
-## Development
+## TODO
 
-### Prerequisite
+* [commitlint](https://github.com/conventional-changelog/commitlint)
+
+## Prerequisite
 
 * [yarn](https://yarnpkg.com/)
 
-### Setup
+## Setup
 
 ```
 $ yarn install
 ```
 
-### Commands
+## Commands
 
 Display dependency tree:
 ```
@@ -50,15 +52,19 @@ Run tests only for changed packages:
 $ yarn test-changed
 ```
 
-### Merge a package in a standalone repository
+## Add a new package
+
+TODO
+
+## Merge a package in a standalone repository
 
 Instructions to merge a pre-existing package and retaining its git history
 
-#### Prerequisite
+### Prerequisite
 
 Install [git-filter-repo](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
 
-#### Steps
+### Steps
 
 Clone a packageA and move all files in packageA to `packages/packageA`:
 ```
@@ -77,3 +83,7 @@ $ git fetch packageA --tags
 $ git merge --allow-unrelated-histories packageA/master
 $ git remote remove packageA
 ```
+
+## Release flow
+
+TODO
