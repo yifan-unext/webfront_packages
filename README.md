@@ -22,10 +22,7 @@ $ yarn install
 
 ## Commands
 
-Display dependency tree:
-```
-$ yarn workspaces info
-```
+[yarn workspace](https://classic.yarnpkg.com/en/docs/cli/workspace/)
 
 Run `yarn` command in the selected package:
 ```
@@ -37,9 +34,9 @@ For ex:
 $ yarn workspace awesome-package add react --dev
 ```
 
-Add a common dependency to all packages:
+Add a common dev dependency:
 ```
-$ yarn add <package-name> -W
+$ yarn add <package-name> -D -W
 ```
 
 Run tests:
@@ -54,7 +51,8 @@ $ yarn test-changed
 
 ## Add a new package
 
-TODO
+* Put the new package in `packages/`.
+* Add `test` & `build` scripts in the `package.json` of the new package.
 
 ## Merge a package in a standalone repository
 
@@ -86,4 +84,9 @@ $ git remote remove packageA
 
 ## Release flow
 
-TODO
+Bump version locally:
+```
+$ yarn lerna:version
+```
+
+Submit a pull request for the new version.

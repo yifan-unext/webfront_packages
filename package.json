@@ -10,7 +10,7 @@
     "build-changed": "lerna run build --since origin/master",
     "test": "lerna run test",
     "test-changed": "lerna run test --since origin/master",
-    "version": "lerna version --conventional-commits --no-git-tag-version"
+    "lerna:version": "lerna version --conventional-commits --no-git-tag-version"
   },
   "devDependencies": {
     "commitizen": "^4.1.2",
