@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "git://github.com/u-next/unextjs-oauth",
+  "repository": "git://github.com/yifan-unext/unextjs-oauth",
   "scripts": {
     "clean": "rimraf dist",
     "dev": "next dev",
