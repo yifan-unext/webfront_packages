@@ -12,13 +12,8 @@ jobs:
       matrix:
         node-version: [10.x, 12.x]
     steps:
-      # https://github.com/actions/checkout/issues/217
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Pull all tags
-        run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
