@@ -6,10 +6,6 @@ The monorepo for managing webfront npm packages.
 
 [https://github.com/orgs/u-next/packages](https://github.com/orgs/u-next/packages)
 
-## TODO
-
-- [commitlint](https://github.com/conventional-changelog/commitlint)
-
 ## Prerequisite
 
 - [yarn](https://yarnpkg.com/)
@@ -68,7 +64,7 @@ $ yarn test-changed
     },
   ```
 
-## Merge a package in a standalone repository
+## Add an existing package from a standalone repository
 
 Instructions to merge a pre-existing package and retaining its git history
 
@@ -116,4 +112,8 @@ Bump version locally:
 $ yarn lerna:version
 ```
 
+Commit the changes for the package you'd like to publish.
+
 Submit a pull request for the new version.
+
+Once it's merge to the master branch, the bumped version will be published.
