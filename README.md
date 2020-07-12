@@ -6,48 +6,29 @@ The monorepo for managing webfront npm packages.
 
 [https://github.com/orgs/u-next/packages](https://github.com/orgs/u-next/packages)
 
-## Prerequisite
-
-- [yarn](https://yarnpkg.com/)
-
 ## Setup
 
 ```
-$ yarn install
+$ npm install
+$ npm run bootstrap
 ```
 
 ## Commands
 
-[yarn workspace](https://classic.yarnpkg.com/en/docs/cli/workspace/)
+Add a dependency:
 
-Run `yarn` command in the selected package:
-
-```
-$ yarn workspace <package-name> <command>
-```
-
-For ex:
-
-```
-$ yarn workspace awesome-package add react --dev
-```
-
-Add a common dev dependency:
-
-```
-$ yarn add <package-name> -D -W
-```
+[https://github.com/lerna/lerna/tree/master/commands/add#readme](https://github.com/lerna/lerna/tree/master/commands/add#readme)
 
 Run tests:
 
 ```
-$ yarn test
+$ npm run test
 ```
 
 Run tests only for changed packages:
 
 ```
-$ yarn test-changed
+$ npm run test-changed
 ```
 
 ## Add a new package
@@ -109,7 +90,7 @@ Edit `packages/<package-name>/package.json`:
 Bump version locally:
 
 ```
-$ yarn lerna:version
+$ npm run lerna:version
 ```
 
 Commit the changes for the package you'd like to publish.

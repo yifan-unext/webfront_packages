@@ -27,7 +27,7 @@ jobs:
         env:
           HUSKY_SKIP_INSTALL: 1
         run: |
-          npm install
+          npm ci
           npm run bootstrap
           npm run build-changed
           npm run test-changed
