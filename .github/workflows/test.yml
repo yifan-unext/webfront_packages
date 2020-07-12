@@ -28,5 +28,5 @@ jobs:
           HUSKY_SKIP_INSTALL: 1
         run: |
           npm install
-          npm build-changed
-          npm test-changed
+          npm run build-changed
+          npm run test-changed
