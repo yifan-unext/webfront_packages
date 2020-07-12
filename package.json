@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "bootstrap": "lerna bootstrap --hoist",
     "build": "lerna run build",
     "build-changed": "lerna run build --since origin/master",
     "test": "lerna run test",

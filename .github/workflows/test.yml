@@ -27,6 +27,6 @@ jobs:
         env:
           HUSKY_SKIP_INSTALL: 1
         run: |
-          yarn install
-          yarn build-changed
-          yarn test-changed
+          npm install
+          npm build-changed
+          npm test-changed

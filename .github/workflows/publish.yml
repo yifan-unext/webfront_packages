@@ -25,10 +25,10 @@ jobs:
         env:
           HUSKY_SKIP_INSTALL: 1
         run: |
-          yarn install
-          yarn build
+          npm install
+          npm build
       - name: Publish
-        run: yarn lerna publish from-package --yes
+        run: npx lerna publish from-package --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           # NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
