@@ -6,65 +6,95 @@ The monorepo for managing webfront npm packages.
 
 [https://github.com/orgs/u-next/packages](https://github.com/orgs/u-next/packages)
 
-## Development
-
-### Prerequisite
-
-* [yarn](https://yarnpkg.com/)
-* [lerna](https://lerna.js.org/)
-
-### Setup
+## Setup
 
 ```
-$ yarn install
+$ npm install
+$ npm run bootstrap
 ```
 
-### Commands
+## Commands
 
-Display dependency tree:
-```
-$ yarn workspaces info
-```
+Add a dependency:
 
-Run `yarn` command in the selected package:
-```
-$ yarn workspace <package-name> <command>
-```
+[https://github.com/lerna/lerna/tree/master/commands/add#readme](https://github.com/lerna/lerna/tree/master/commands/add#readme)
 
-For ex:
+Run tests:
+
 ```
-$ yarn workspace awesome-package add react --dev
+$ npm run test
 ```
 
-Add a common dependency to all packages:
+Run tests only for changed packages:
+
 ```
-$ yarn add <package-name> -W
+$ npm run test-changed
 ```
 
-### Merge a package in a standalone repository
+## Add a new package
+
+- Put the new package in `packages/`.
+- Add `test` & `build` scripts in the `package.json` of the new package.
+- Edit `packages/<package-name>/package.json`:
+
+  ```
+    "repository": {
+      "type": "git",
+      "url": "git@github.com:u-next/webfront_packages.git",
+      "directory": "packages/<package-name>"
+    },
+  ```
+
+## Add an existing package from a standalone repository
 
 Instructions to merge a pre-existing package and retaining its git history
 
-#### Prerequisite
+### Prerequisite
 
 Install [git-filter-repo](https://github.com/newren/git-filter-repo/blob/main/INSTALL.md)
 
-#### Steps
+### Steps
 
-Clone a packageA and move all files in packageA to `packages/packageA`:
+Clone the package `<package-name>` and move all files in `<package-name>` to `packages/<package-name>`:
+
 ```
 $ cd ..
-$ git clone packageA
-$ cd packageA
-$ git filter-repo --to-subdirectory-filter packages/packageA
+$ git clone <package-name>
+$ cd <package-name>
+$ git filter-repo --to-subdirectory-filter packages/<package-name>
 $ cd ..
 ```
 
-Merge the local packageA to webfront_packages:
+Merge the local `<package-name>` to webfront_packages:
+
 ```
 $ cd webfront_packages
-$ git remote add packageA ../packageA
-$ git fetch packageA --tags
-$ git merge --allow-unrelated-histories packageA/master
-$ git remote remove packageA
+$ git remote add <package-name> ../<package-name>
+$ git fetch <package-name> --tags
+$ git merge --allow-unrelated-histories <package-name>/master
+$ git remote remove <package-name>
 ```
+
+Edit `packages/<package-name>/package.json`:
+
+```
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:u-next/webfront_packages.git",
+    "directory": "packages/<package-name>"
+  },
+```
+
+## Release flow
+
+Bump version locally:
+
+```
+$ npm run lerna:version
+```
+
+Commit the changes for the package you'd like to publish.
+
+Submit a pull request for the new version.
+
+Once it's merge to the master branch, the bumped version will be published.
